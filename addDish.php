@@ -28,7 +28,10 @@ if(!$stmt->execute()){
 }
 
 ######################################################################
+# ADD THE CONNECTIONS TO DISH_FOOD ... ALL EXCEPT NONE
 ######################################################################
+	for ($i=0; $i<10; $i++){
+		if ($_POST['selFood' . $i] != "None"){
 			if(!($stmt = $mysqli->prepare(
 			"INSERT INTO dish_food (did, fid, dfWeight) VALUES ((SELECT dId FROM dish WHERE dName = ?),(SELECT fId FROM food WHERE fId = ?), ?);"))){
 				echo "Prepare error: "  . $stmt->errno . " " . $stmt->error;
@@ -39,16 +42,59 @@ if(!$stmt->execute()){
 			if(!$stmt->execute()){
 				echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
 			} else {
+				echo "Added FID " . $_POST['selFood'. $i] . " to " . $_POST['dName'] . ".<br>";
 			}
+		}
 	}
 
 ######################################################################
+# ADD THE CONNECTIONS TO DISH_PREP ... ALL EXCEPT NONE
 ######################################################################
+	for ($i=0; $i<10; $i++){
+		if ($_POST['selPrep' . $i] != "None"){
+			if(!($stmt = $mysqli->prepare(
+			"INSERT INTO dish_prep (did, pid) VALUES ((SELECT dId FROM dish WHERE dName = ?),(SELECT pId FROM prep WHERE pId = ?));"))){
+				echo "Prepare error: "  . $stmt->errno . " " . $stmt->error;
+			}
+			if(!($stmt->bind_param("ss",$_POST['dName'], $_POST['selPrep' . $i]))){
+				echo "Bind error: "  . $stmt->errno . " " . $stmt->error;
+			}
+			if(!$stmt->execute()){
+				echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
+			} else {
+				echo "Added prep ID " . $_POST['selPrep'. $i] . " to " . $_POST['dName'] . ".<br>";
+			}
+		}
+	}
 
+######################################################################
+# ADD THE CONNECTIONS TO DISH_CLEAN ... ALL EXCEPT NONE
+######################################################################
+	for ($i=0; $i<10; $i++){
+		if ($_POST['selClean' . $i] != "None"){
+			if(!($stmt = $mysqli->prepare(
+			"INSERT INTO dish_clean (did, cid) VALUES ((SELECT dId FROM dish WHERE dName = ?),(SELECT cId FROM clean WHERE cId = ?));"))){
+				echo "Prepare error: "  . $stmt->errno . " " . $stmt->error;
+			}
+			if(!($stmt->bind_param("ss",$_POST['dName'], $_POST['selClean' . $i]))){
+				echo "Bind error: "  . $stmt->errno . " " . $stmt->error;
+			}
+			if(!$stmt->execute()){
+				echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
+			} else {
+				echo "Added clean ID " . $_POST['selClean'. $i] . " to " . $_POST['dName'] . ".<br>";
+			}
+		}
+	}
+
+######################################################################
+# SUM THE TOTAL CALORIES AND COST FOR THAT DISH AND UPDATE DISH !
+######################################################################
 if(!($stmt = $mysqli->prepare(
 "SELECT fCal, fCost, fWeight, dfWeight FROM dish d INNER JOIN dish_food df ON df.did = d.dId INNER JOIN food f ON f.fId = df.fid WHERE d.dName = ?"))){
 	echo "Prepare error: " . $stmt->errno . " " . $stmt->error;
 }
+if(!($stmt->bind_param("s", $_POST['dName']))){
 	echo "Bind error: "  . $stmt->errno . " " . $stmt->error;
 }
 if(!$stmt->execute()){
@@ -81,7 +127,55 @@ if(!$stmt->execute()){
 ######################################################################
 # AND NOW UPDATE TOTAL EFFORT FOR THE DISH
 ######################################################################
+if(!($stmt = $mysqli->prepare(
+"SELECT pEffort FROM dish d INNER JOIN dish_prep dp ON d.dId = dp.did INNER JOIN prep p ON p.pId = dp.pid WHERE d.dName = ?;"))){
+	echo "Prepare error: " . $stmt->errno . " " . $stmt->error;
+}
+if(!($stmt->bind_param("s", $_POST['dName']))){
+	echo "Bind error: "  . $stmt->errno . " " . $stmt->error;
+}
+if(!$stmt->execute()){
+	echo "Execute error:  " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+}
+if(!$stmt->bind_result($pEffort)){
+	echo "Bind error: " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+}
 
+$eTotal=0;
+while($stmt->fetch()){
+	$eTotal += $pEffort;
+}
+
+if(!($stmt = $mysqli->prepare(
+"SELECT cEffort FROM dish d INNER JOIN dish_clean dc ON d.dId = dc.did INNER JOIN clean c ON c.cId = dc.cid WHERE d.dName = ?;"))){
+	echo "Prepare error: " . $stmt->errno . " " . $stmt->error;
+}
+if(!($stmt->bind_param("s", $_POST['dName']))){
+	echo "Bind error: "  . $stmt->errno . " " . $stmt->error;
+}
+if(!$stmt->execute()){
+	echo "Execute error:  " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+}
+if(!$stmt->bind_result($cEffort)){
+	echo "Bind error: " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+}
+
+while($stmt->fetch()){
+	$eTotal += $cEffort;
+}
+
+if(!($stmt = $mysqli->prepare(
+"UPDATE dish SET dEffort = ? WHERE dName = ?"))){
+	echo "Prepare error: " . $stmt->errno . " " . $stmt->error;
+}
+if(!($stmt->bind_param("ds", $eTotal, $_POST['dName']))){
+	echo "Bind error: "  . $stmt->errno . " " . $stmt->error;
+}
+if(!$stmt->execute()){
+	echo "Execute error:  " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+}else {
+	echo "Updated " . $stmt->affected_rows . " Total Effort<br>";
+}
 
 $stmt->close();
 ?>
