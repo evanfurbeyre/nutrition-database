@@ -28,9 +28,7 @@ if(!$stmt->execute()){
 }
 
 ######################################################################
-# ADD THE CONNECTIONS TO DISH_FOOD ... ALL OF EM!
 ######################################################################
-	for ($i=0; $i<4; $i++){
 			if(!($stmt = $mysqli->prepare(
 			"INSERT INTO dish_food (did, fid, dfWeight) VALUES ((SELECT dId FROM dish WHERE dName = ?),(SELECT fId FROM food WHERE fId = ?), ?);"))){
 				echo "Prepare error: "  . $stmt->errno . " " . $stmt->error;
@@ -41,19 +39,16 @@ if(!$stmt->execute()){
 			if(!$stmt->execute()){
 				echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
 			} else {
-				echo "Added " . $_POST['selFood'. $i] . " to " . $_POST['dName'] . ".<br>";
 			}
 	}
 
 ######################################################################
-# SUM THE TOTAL CALORIES AND COST FOR THAT DISH AND UPDATE DISH !
 ######################################################################
 
 if(!($stmt = $mysqli->prepare(
 "SELECT fCal, fCost, fWeight, dfWeight FROM dish d INNER JOIN dish_food df ON df.did = d.dId INNER JOIN food f ON f.fId = df.fid WHERE d.dName = ?"))){
 	echo "Prepare error: " . $stmt->errno . " " . $stmt->error;
 }
-if(!($stmt->bind_param("s", $_POST['dName1']))){
 	echo "Bind error: "  . $stmt->errno . " " . $stmt->error;
 }
 if(!$stmt->execute()){

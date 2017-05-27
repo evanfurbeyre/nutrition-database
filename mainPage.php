@@ -150,7 +150,7 @@ if($mysqli->connect_errno){
 			</thead>
 			<tbody>
 				<?php
-				  for($i=0; $i<4; $i++){
+				  for($i=0; $i<10; $i++){
 						echo '<tr>
 							<td><select name="selFood'. $i .'">';
 								if(!($stmt = $mysqli->prepare("SELECT fId, fName FROM food"))){
@@ -163,8 +163,9 @@ if($mysqli->connect_errno){
 									echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
 								}
 								while($stmt->fetch()){
-						echo '<option selected="None" value=" '. $fId . ' "> ' . $fName . '</option>\n';
+						echo '<option value=" '. $fId . ' "> ' . $fName . '</option>\n';
 								}
+									echo '<option value="None" selected>None</option>\n';
 								$stmt->close();
 						echo '</select></td>
 							<td><input type=number step="any" name=foodWeight'. $i .'></td>
@@ -179,8 +180,9 @@ if($mysqli->connect_errno){
 									echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
 								}
 								while($stmt->fetch()){
-									echo '<option selected="None" value=" '. $pId . ' "> ' . $pName . '</option>\n';
+									echo '<option value=" '. $pId . ' "> ' . $pName . '</option>\n';
 								}
+									echo '<option value="None" selected>None</option>\n';
 								$stmt->close();
 						echo
 							'</select></td>
@@ -195,8 +197,9 @@ if($mysqli->connect_errno){
 									echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
 								}
 								while($stmt->fetch()){
-									echo '<option selected="None" value=" '. $cId . ' "> ' . $cName . '</option>\n';
+									echo '<option value=" '. $cId . ' "> ' . $cName . '</option>\n';
 								}
+									echo '<option value="None" selected>None</option>\n';
 								$stmt->close();
 						echo
 							'</select></td>
