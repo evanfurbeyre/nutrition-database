@@ -35,7 +35,6 @@ if(!$stmt->execute()){
 			"INSERT INTO dish_food (did, fid, dfWeight) VALUES ((SELECT dId FROM dish WHERE dName = ?),(SELECT fId FROM food WHERE fId = ?), ?);"))){
 				echo "Prepare error: "  . $stmt->errno . " " . $stmt->error;
 			}
-			if(!($stmt->bind_param("ssd",$_POST['dName'],$_POST['selFood'. $i . ''],$_POST['foodWeight' . $i . '']))){
 				echo "Bind error: "  . $stmt->errno . " " . $stmt->error;
 			}
 			if(!$stmt->execute()){
@@ -43,7 +42,6 @@ if(!$stmt->execute()){
 			} else {
 				echo "Added " . $_POST['selFood'. $i] . " to " . $_POST['dName'] . ".<br>";
 			}
-		#}
 	}
 
 ######################################################################
