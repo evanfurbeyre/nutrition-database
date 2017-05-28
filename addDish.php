@@ -24,7 +24,7 @@ if(!($stmt->bind_param("ss",$_POST['dName'],$_POST['dNotes']))){
 if(!$stmt->execute()){
 	echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
 } else {
-	echo "Added " . $stmt->affected_rows . " rows to dish<br>";
+	echo "Added " . $_POST['dName'] . " to dish<br>";
 }
 
 ######################################################################
@@ -42,7 +42,7 @@ if(!$stmt->execute()){
 			if(!$stmt->execute()){
 				echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
 			} else {
-				echo "Added FID " . $_POST['selFood'. $i] . " to " . $_POST['dName'] . ".<br>";
+				echo "Added Food ID " . $_POST['selFood'. $i] . " to " . $_POST['dName'] . "<br>";
 			}
 		}
 	}
@@ -62,7 +62,7 @@ if(!$stmt->execute()){
 			if(!$stmt->execute()){
 				echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
 			} else {
-				echo "Added prep ID " . $_POST['selPrep'. $i] . " to " . $_POST['dName'] . ".<br>";
+				echo "Added Prep ID " . $_POST['selPrep'. $i] . " to " . $_POST['dName'] . "<br>";
 			}
 		}
 	}
@@ -82,7 +82,7 @@ if(!$stmt->execute()){
 			if(!$stmt->execute()){
 				echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
 			} else {
-				echo "Added clean ID " . $_POST['selClean'. $i] . " to " . $_POST['dName'] . ".<br>";
+				echo "Added Clean ID " . $_POST['selClean'. $i] . " to " . $_POST['dName'] . "<br>";
 			}
 		}
 	}
@@ -91,7 +91,7 @@ if(!$stmt->execute()){
 # SUM THE TOTAL CALORIES AND COST FOR THAT DISH AND UPDATE DISH !
 ######################################################################
 if(!($stmt = $mysqli->prepare(
-"SELECT fCal, fCost, fWeight, dfWeight FROM dish d INNER JOIN dish_food df ON df.did = d.dId INNER JOIN food f ON f.fId = df.fid WHERE d.dName = ?"))){
+"SELECT fCal, fCost, fFat, fSatFat, fCarb, fSug, fProt, fSod, fWeight, dfWeight FROM dish d INNER JOIN dish_food df ON df.did = d.dId INNER JOIN food f ON f.fId = df.fid WHERE d.dName = ?"))){
 	echo "Prepare error: " . $stmt->errno . " " . $stmt->error;
 }
 if(!($stmt->bind_param("s", $_POST['dName']))){
@@ -100,28 +100,40 @@ if(!($stmt->bind_param("s", $_POST['dName']))){
 if(!$stmt->execute()){
 	echo "Execute error:  " . $mysqli->connect_errno . " " . $mysqli->connect_error;
 }
-if(!$stmt->bind_result($fCal, $fCost, $fWeight, $dfWeight)){
+if(!$stmt->bind_result($fCal, $fCost, $fFat, $fSatFat, $fCarb, $fSug, $fProt, $fSod, $fWeight, $dfWeight)){
 	echo "Bind error: " . $mysqli->connect_errno . " " . $mysqli->connect_error;
 }
 
 $sumCost = 0;
 $sumCal = 0;
+$sumFat = 0;
+$sumSatFat = 0;
+$sumCarb = 0;
+$sumSug = 0;
+$sumProt = 0;
+$sumSod = 0;
 while($stmt->fetch()){
 	$sumCal += $fCal * $dfWeight / $fWeight;
 	$sumCost += $fCost * $dfWeight / $fWeight;
+	$sumFat += $fFat * $dfWeight / $fWeight;
+	$sumSatFat += $fSatFat * $dfWeight / $fWeight;
+	$sumCarb += $fCarb * $dfWeight / $fWeight;
+	$sumSug += $fSug * $dfWeight / $fWeight;
+	$sumProt += $fProt * $dfWeight / $fWeight;
+	$sumSod += $fSod * $dfWeight / $fWeight;
 }
 
 if(!($stmt = $mysqli->prepare(
-"UPDATE dish SET dCal = ?, dCost = ? WHERE dName = ?"))){
+"UPDATE dish SET dCal = ?, dCost = ?, dFat = ?, dSatFat = ?, dCarb = ?, dSug = ?, dProt = ?, dSod = ? WHERE dName = ?"))){
 	echo "Prepare error: " . $stmt->errno . " " . $stmt->error;
 }
-if(!($stmt->bind_param("dds", $sumCal, $sumCost, $_POST['dName']))){
+if(!($stmt->bind_param("dddddddds", $sumCal, $sumCost, $sumFat, $sumSatFat, $sumCarb, $sumSug, $sumProt, $sumSod, $_POST['dName']))){
 	echo "Bind error: "  . $stmt->errno . " " . $stmt->error;
 }
 if(!$stmt->execute()){
 	echo "Execute error:  " . $mysqli->connect_errno . " " . $mysqli->connect_error;
 }else {
-	echo "Updated " . $stmt->affected_rows . " Total Calories and Total Cost Columns<br>";
+	echo "Updated Dish Attributes<br>";
 }
 
 ######################################################################
@@ -174,7 +186,7 @@ if(!($stmt->bind_param("ds", $eTotal, $_POST['dName']))){
 if(!$stmt->execute()){
 	echo "Execute error:  " . $mysqli->connect_errno . " " . $mysqli->connect_error;
 }else {
-	echo "Updated " . $stmt->affected_rows . " Total Effort<br>";
+	echo "Updated Dish Total Effort<br>";
 }
 
 $stmt->close();

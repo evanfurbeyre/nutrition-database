@@ -12,10 +12,16 @@ CREATE TABLE dish (
 	dCost FLOAT(5,2),
 	dCal FLOAT (7,2),
 	dEffort INT(11),
+	dFat FLOAT(7,2),
+	dSatFat FLOAT(7,2),
+	dCarb FLOAT(7,2),
+	dSug FLOAT(7,2),
+	dProt FLOAT(7,2),
+	dSod FLOAT(7,2),
 	dText TEXT,
 	PRIMARY KEY (dId),
 	UNIQUE (dName)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE food (
 	fId SMALLINT(5) AUTO_INCREMENT,
@@ -23,10 +29,16 @@ CREATE TABLE food (
 	fCost FLOAT(5,2),
 	fCal FLOAT (7,2),
 	fWeight FLOAT(7,2),
+	fFat FLOAT(7,2),
+	fSatFat FLOAT(7,2),
+	fCarb FLOAT(7,2),
+	fSug FLOAT(7,2),
+	fProt FLOAT(7,2),
+	fSod FLOAT(7,2),
 	fText TEXT,
 	PRIMARY KEY (fId),
 	UNIQUE (fName)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE prep (
 	pId SMALLINT(5) AUTO_INCREMENT,
@@ -35,7 +47,7 @@ CREATE TABLE prep (
 	pNotes TEXT,
 	PRIMARY KEY (pId),
 	UNIQUE (pName)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE clean (
 	cId SMALLINT(5) AUTO_INCREMENT,
@@ -71,33 +83,35 @@ CREATE TABLE dish_clean (
 	FOREIGN KEY (cid) REFERENCES clean (cId) ON DELETE CASCADE ON UPDATE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO prep (pName, pEffort) VALUES ("None", 0);
 INSERT INTO prep (pName, pEffort) VALUES ("Cutting Board", 1);
+INSERT INTO prep (pName, pEffort) VALUES ("Plate", 1);
 INSERT INTO prep (pName, pEffort) VALUES ("Knife", 1);
 INSERT INTO prep (pName, pEffort) VALUES ("Spoon", 1);
-INSERT INTO prep (pName, pEffort) VALUES ("Stove", 4);
+INSERT INTO prep (pName, pEffort) VALUES ("Cut Vegetables", 2);
+INSERT INTO prep (pName, pEffort) VALUES ("Finger Food", 1);
+INSERT INTO prep (pName, pEffort) VALUES ("Frying Pan", 3);
+INSERT INTO prep (pName, pEffort) VALUES ("Pot", 3);
+INSERT INTO prep (pName, pEffort) VALUES ("Stove", 3);
 
-INSERT INTO clean (cName, cEffort) VALUES ("None", 0);
-INSERT INTO clean (cName, cEffort) VALUES ("Cutlery", 1);
+INSERT INTO clean (cName, cEffort) VALUES ("Fork", 1);
+INSERT INTO clean (cName, cEffort) VALUES ("Knife", 1);
+INSERT INTO clean (cName, cEffort) VALUES ("Spoon", 1);
+INSERT INTO clean (cName, cEffort) VALUES ("Plate", 1);
 INSERT INTO clean (cName, cEffort) VALUES ("Cutting Board", 2);
 INSERT INTO clean (cName, cEffort) VALUES ("Frying Pan", 3);
+INSERT INTO clean (cName, cEffort) VALUES ("Spatula", 3);
+INSERT INTO clean (cName, cEffort) VALUES ("Wipe Counter", 1);
+INSERT INTO clean (cName, cEffort) VALUES ("French Press", 5);
 
-INSERT INTO food (fName, fCost, fCal, fWeight) VALUES ("None", 0, 0, 0);
-INSERT INTO food (fName, fCost, fCal, fWeight, fText) VALUES ("Banana", .22, 105, 116, "(weight is peeled)");
-INSERT INTO food (fName, fCost, fCal, fWeight, fText) VALUES ("Bread", .16, 100, 26, "Nature's Own - Whole Wheat");
-INSERT INTO food (fName, fCost, fCal, fWeight, fText) VALUES ("Honey", .22, 30, 10.5, "SueBee Clover Honey");
-INSERT INTO food (fName, fCost, fCal, fWeight, fText) VALUES ("Granola", .09, 100, 11.11, "Just guessing on weight for now" );
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt,  fSod, fText) VALUES ("Banana", .22, 105, 118, .4, .13, 27, 14.4, 1.3, .00118, "Medium, Peeled");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt,  fSod, fText) VALUES ("Granola", .20, 100, 23, 3, 1, 17, 5, 1, .090, "Sprouts - 1/4 cup with chocolate nugs");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt,  fSod, fText) VALUES ("Honey", .16, 30, 10.5, 0, 0, 8.5, 8.5, 0, 0, ".5 Tbsp of WF365 organic");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt,  fSod, fText) VALUES ("Bread", .16, 60, 26, .5, 0, 11, 1, 4, .110, "Nature's Own 100% Whole Wheat");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt,  fSod, fText) VALUES ("Almond Butter", .36, 95, 16, 8.5, 1.25, 3.5, 1.5, 3, .065, "MaraNatha No Stir - 1 Tbsp");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt,  fSod, fText) VALUES ("Yogurt", 1.00, 220, 227, 9, 5, 27, 25, 8, .115, "Medium, Peeled");
 
-INSERT INTO dish (dName, dText) VALUES ("Banana Sandwich", "A very yummy sandwich");
-
-INSERT INTO dish_food (did, fid, numServs) VALUES ((SELECT dId FROM dish WHERE dName = "Banana Sandwich"), (SELECT fId FROM food WHERE fName = "Banana"), 1);
-INSERT INTO dish_food (did, fid, numServs) VALUES ((SELECT dId FROM dish WHERE dName = "Banana Sandwich"), (SELECT fId FROM food WHERE fName = "Bread"), 2);
-INSERT INTO dish_food (did, fid, numServs) VALUES ((SELECT dId FROM dish WHERE dName = "Banana Sandwich"), (SELECT fId FROM food WHERE fName = "Honey"), 1);
-INSERT INTO dish_food (did, fid, numServs) VALUES ((SELECT dId FROM dish WHERE dName = "Banana Sandwich"), (SELECT fId FROM food WHERE fName = "Granola"), 1);
-
-# We need to figure out how to add a dish all at once ( dish, cal, cost, effort, etc) Probably server side php
-
-SELECT SUM(f.fCal) FROM dish d INNER JOIN dish_food df ON df.did = d.dId INNER JOIN food f ON f.fId = df.fid WHERE d.dName = "Banana Sandwich" GROUP BY d.dName
-
-
-
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Mayonaisse", .13, 110, 14, 12, 1.5, 0, 0, 0, .095, "Organics brand");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Horse-Radish", .05, 5, 5, 0, 0, 0, 0, 0, .060, "Sprouts");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Sweet Corn Salsa", .21, 35, 32, 0, 0, 8, 5, .3, .1, "Sprouts");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Ham", .75, 70, 56, 1, 0, 2, 1, 12, .410, "Trader Joe's Uncured Black Forest");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Tortilla Chips", .4, 140, 28, 7, 1, 17, 0, 2, .1, "Sprouts Extra Thick");

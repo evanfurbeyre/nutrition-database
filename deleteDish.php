@@ -7,16 +7,16 @@ if(!$mysqli || $mysqli->connect_errno){
 	echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
 	}
 
-if(!($stmt = $mysqli->prepare("INSERT INTO food(fName, fCal, fCost, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES (?,?,?,?,?,?,?,?,?,?,?)"))){
+if(!($stmt = $mysqli->prepare("DELETE FROM dish WHERE dName = ?"))){
 	echo "Prepare error: "  . $stmt->errno . " " . $stmt->error;
 }
-if(!($stmt->bind_param("sddddddddds",$_POST['fName'],$_POST['fCal'],$_POST['fCost'],$_POST['fWeight'],$_POST['fFat'],$_POST['fSatFat'],$_POST['fCarb'],$_POST['fSug'],$_POST['fProt'],$_POST['fSod'],$_POST['fText']))){
+if(!($stmt->bind_param("s",$_POST['dDelete']))){
 	echo "Bind error: "  . $stmt->errno . " " . $stmt->error;
 }
 if(!$stmt->execute()){
 	echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
 } else {
-	echo "Added " . $_POST['fName'] . " to food";
+	echo "Deleted Dish " . $_POST['dDelete'];
 }
 ?>
 <form method="POST" action="mainPage.php">
