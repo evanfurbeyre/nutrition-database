@@ -1,0 +1,16 @@
+body{
+  background-color:lightblue;
+}
+
+table{
+    border-style:solid;
+    border-width:thin;
+    background-color:white;
+}
+th, td{
+    border-style:solid;
+    border-width:thin;
+}
+caption{
+  font-weight: bold;
+}
