@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="style.css" type="text/css">
 <?php
 //Turn on error reporting
 ini_set('display_errors', 'On');
@@ -9,7 +10,6 @@ $mysqli = new mysqli("oniddb.cws.oregonstate.edu","furbeyre-db","9OolCETjSlfkDUD
 if(!$mysqli || $mysqli->connect_errno){
 	echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
 	}
-
 
 ######################################################################
 # ADD THE REPORT DATE AND REPORT NOTES
@@ -24,7 +24,7 @@ if(!($stmt->bind_param("ss",$_POST['rDate'],$_POST['rNotes']))){
 if(!$stmt->execute()){
 	echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
 } else {
-	echo "Added " . $_POST['rDate'] . " to reports<br>";
+	echo "Added Report";
 }
 
 ######################################################################
@@ -41,12 +41,9 @@ if(!$stmt->execute()){
 			}
 			if(!$stmt->execute()){
 				echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
-			} else {
-				echo "Added Food ID " . $_POST['selDish'. $i] . " to " . $_POST['rDate'] . "<br>";
 			}
 		}
 	}
-
 
 ######################################################################
 # SUM ALL THE NUTRIENTS/COST/CAL OF THE DISHES FOR THAT DAY!
@@ -86,6 +83,9 @@ while($stmt->fetch()){
 	$sumSod += $dSod;
 }
 
+######################################################################
+# NOW INSERT THEM BACK INTO DISH
+######################################################################
 if(!($stmt = $mysqli->prepare(
 "UPDATE report SET rCal = ?, rCost = ?, rEffort = ?, rFat = ?, rSatFat = ?, rCarb = ?, rSug = ?, rProt = ?, rSod = ? WHERE rDate = ?"))){
 	echo "Prepare error: " . $stmt->errno . " " . $stmt->error;
@@ -95,13 +95,10 @@ if(!($stmt->bind_param("ddddddddds", $sumCal, $sumCost, $sumEffort, $sumFat, $su
 }
 if(!$stmt->execute()){
 	echo "Execute error:  " . $mysqli->connect_errno . " " . $mysqli->connect_error;
-}else {
-	echo "Updated Dish Attributes<br>";
 }
 
 $stmt->close();
 ?>
-
 
 <div>
   <form method="POST" action="mainPage.php">

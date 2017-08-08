@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="style.css" type="text/css">
 <?php
 //Turn on error reporting
 ini_set('display_errors', 'On');
@@ -23,8 +24,8 @@ if(!($stmt->bind_param("ss",$_POST['dName'],$_POST['dNotes']))){
 }
 if(!$stmt->execute()){
 	echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
-} else {
-	echo "Added " . $_POST['dName'] . " to dish<br>";
+}else {
+	echo "Added Dish";
 }
 
 ######################################################################
@@ -41,8 +42,6 @@ if(!$stmt->execute()){
 			}
 			if(!$stmt->execute()){
 				echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
-			} else {
-				echo "Added Food ID " . $_POST['selFood'. $i] . " to " . $_POST['dName'] . "<br>";
 			}
 		}
 	}
@@ -61,8 +60,6 @@ if(!$stmt->execute()){
 			}
 			if(!$stmt->execute()){
 				echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
-			} else {
-				echo "Added Prep ID " . $_POST['selPrep'. $i] . " to " . $_POST['dName'] . "<br>";
 			}
 		}
 	}
@@ -81,8 +78,6 @@ if(!$stmt->execute()){
 			}
 			if(!$stmt->execute()){
 				echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
-			} else {
-				echo "Added Clean ID " . $_POST['selClean'. $i] . " to " . $_POST['dName'] . "<br>";
 			}
 		}
 	}
@@ -132,8 +127,6 @@ if(!($stmt->bind_param("dddddddds", $sumCal, $sumCost, $sumFat, $sumSatFat, $sum
 }
 if(!$stmt->execute()){
 	echo "Execute error:  " . $mysqli->connect_errno . " " . $mysqli->connect_error;
-}else {
-	echo "Updated Dish Attributes<br>";
 }
 
 ######################################################################
@@ -185,13 +178,10 @@ if(!($stmt->bind_param("ds", $eTotal, $_POST['dName']))){
 }
 if(!$stmt->execute()){
 	echo "Execute error:  " . $mysqli->connect_errno . " " . $mysqli->connect_error;
-}else {
-	echo "Updated Dish Total Effort<br>";
 }
 
 $stmt->close();
 ?>
-
 
 <div>
   <form method="POST" action="mainPage.php">

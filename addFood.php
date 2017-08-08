@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="style.css" type="text/css">
 <?php
 //Turn on error reporting
 ini_set('display_errors', 'On');
@@ -16,7 +17,7 @@ if(!($stmt->bind_param("sddddddddds",$_POST['fName'],$_POST['fCal'],$_POST['fCos
 if(!$stmt->execute()){
 	echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
 } else {
-	echo "Added " . $_POST['fName'] . " to food";
+	echo "Added Food";
 }
 ?>
 <form method="POST" action="mainPage.php">

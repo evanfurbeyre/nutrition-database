@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="style.css" type="text/css">
 <?php
 //Turn on error reporting
 ini_set('display_errors', 'On');
@@ -6,7 +7,6 @@ $mysqli = new mysqli("oniddb.cws.oregonstate.edu","furbeyre-db","9OolCETjSlfkDUD
 if(!$mysqli || $mysqli->connect_errno){
 	echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
 	}
-	
 if(!($stmt = $mysqli->prepare("INSERT INTO prep(pName, pEffort, pNotes) VALUES (?,?,?)"))){
 	echo "Prepare error: "  . $stmt->errno . " " . $stmt->error;
 }
@@ -16,6 +16,6 @@ if(!($stmt->bind_param("sds",$_POST['pName'],$_POST['pEffort'],$_POST['pNotes'])
 if(!$stmt->execute()){
 	echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
 } else {
-	echo "Added " . $stmt->affected_rows . " rows to prep";
+	echo "Added Prep";
 }
 ?>

@@ -1,4 +1,5 @@
-<?php
+
+<link rel="stylesheet" href="style.css" type="text/css"><?php
 //Turn on error reporting
 ini_set('display_errors', 'On');
 //Connects to the database
@@ -7,16 +8,16 @@ if(!$mysqli || $mysqli->connect_errno){
 	echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
 	}
 
-if(!($stmt = $mysqli->prepare("DELETE FROM food WHERE fName = ?"))){
+if(!($stmt = $mysqli->prepare("DELETE FROM food WHERE fId = ?"))){
 	echo "Prepare error: "  . $stmt->errno . " " . $stmt->error;
 }
-if(!($stmt->bind_param("s",$_POST['fDelete']))){
+if(!($stmt->bind_param("s",$_POST['delFood']))){
 	echo "Bind error: "  . $stmt->errno . " " . $stmt->error;
 }
 if(!$stmt->execute()){
 	echo "Execute error: "  . $stmt->errno . " " . $stmt->error;
 } else {
-	echo "Deleted Food " . $_POST['fDelete'] ;
+	echo "Deleted Food";
 }
 ?>
 <form method="POST" action="mainPage.php">

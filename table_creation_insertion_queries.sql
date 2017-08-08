@@ -1,10 +1,29 @@
+DROP TABLE IF EXISTS report;
 DROP TABLE IF EXISTS dish;
 DROP TABLE IF EXISTS food;
 DROP TABLE IF EXISTS clean;
 DROP TABLE IF EXISTS prep;
 DROP TABLE IF EXISTS dish_food;
+DROP TABLE IF EXISTS report_dish;
 DROP TABLE IF EXISTS dish_clean;
 DROP TABLE IF EXISTS dish_prep;
+
+CREATE TABLE report (
+	rId SMALLINT(5) AUTO_INCREMENT,
+	rDate DATE NOT NULL,
+	rCost FLOAT(5,2),
+	rCal FLOAT (7,2),
+	rEffort INT(11),
+	rFat FLOAT(7,2),
+	rSatFat FLOAT(7,2),
+	rCarb FLOAT(7,2),
+	rSug FLOAT(7,2),
+	rProt FLOAT(7,2),
+	rSod FLOAT(7,2),
+	rText TEXT,
+	PRIMARY KEY (rId),
+	UNIQUE (rDate)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE dish (
 	dId SMALLINT(5) AUTO_INCREMENT,
@@ -64,7 +83,7 @@ CREATE TABLE dish_food (
 	dfWeight INT(11),
 	PRIMARY KEY (did,fid),
 	FOREIGN KEY (did) REFERENCES dish (dId) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (fid) REFERENCES food (fId) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (fid) REFERENCES food (fId) ON DELETE RESTRICT ON UPDATE RESTRICT
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE dish_prep (
@@ -81,6 +100,14 @@ CREATE TABLE dish_clean (
 	PRIMARY KEY (did,cid),
 	FOREIGN KEY (did) REFERENCES dish (dId) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (cid) REFERENCES clean (cId) ON DELETE CASCADE ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE report_dish (
+	rid SMALLINT(5),
+	did SMALLINT(5),
+	PRIMARY KEY (rid,did),
+	FOREIGN KEY (did) REFERENCES dish (dId) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (rid) REFERENCES report (rId) ON DELETE CASCADE ON UPDATE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO prep (pName, pEffort) VALUES ("Cutting Board", 1);
@@ -109,9 +136,20 @@ INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt
 INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt,  fSod, fText) VALUES ("Bread", .16, 60, 26, .5, 0, 11, 1, 4, .110, "Nature's Own 100% Whole Wheat");
 INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt,  fSod, fText) VALUES ("Almond Butter", .36, 95, 16, 8.5, 1.25, 3.5, 1.5, 3, .065, "MaraNatha No Stir - 1 Tbsp");
 INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt,  fSod, fText) VALUES ("Yogurt", 1.00, 220, 227, 9, 5, 27, 25, 8, .115, "Medium, Peeled");
-
 INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Mayonaisse", .13, 110, 14, 12, 1.5, 0, 0, 0, .095, "Organics brand");
-INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Horse-Radish", .05, 5, 5, 0, 0, 0, 0, 0, .060, "Sprouts");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Horse Radish", .05, 5, 5, 0, 0, 0, 0, 0, .060, "Sprouts");
 INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Sweet Corn Salsa", .21, 35, 32, 0, 0, 8, 5, .3, .1, "Sprouts");
 INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Ham", .75, 70, 56, 1, 0, 2, 1, 12, .410, "Trader Joe's Uncured Black Forest");
 INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Tortilla Chips", .4, 140, 28, 7, 1, 17, 0, 2, .1, "Sprouts Extra Thick");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Almonds", .4, 170, 28, 15, 1, 5, 1, 6, .1, "23 Almonds");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Light Sour Cream", .2, 40, 30, 2.5, 1.5, 2, 2, 2, .03, "Sprouts");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Hot Salsa", .3, 10, 32, 0, 0, 2, 2, 0, .25, "Pace");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Tortilla", .3, 230, 70, 7, 1, 37, 1, 6, .16, "10inch Mission Whole Wheat");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Spring Mix", .4, 20, 56, 0, 0, 3, 0, 2, .06, "w Baby spinach");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Balsamic Vinaigrette", .25, 60, 24, 5, 1, 2, 2, 0, .27, "Sprouts Extra Thick");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Egg", .25, 78, 50, 5, 1.6, .6, .6, 6, .06, "1 Large Egg");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Avocado", 1, 322, 201, 29, 4.3, 17, 1.3, 4, .014, "one avocado");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Pickle Chips", .2, 25, 28, 0, 0, 6, 6, 0, .220, "bread and butter");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Onion", .3, 40, 100, .1, .04, 9.3, 4.2, 1.1, 0, "medium yellow");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("White Mushroom", .05, 4, 18, .1, 0, .6, .4, .6, 0, "one medium");
+INSERT INTO food (fName, fCost, fCal, fWeight, fFat, fSatFat, fCarb, fSug, fProt, fSod, fText) VALUES ("Cheddar", .3, 110, 28, 9, 6, .5, 0, 7, .18, "one avocado");
